@@ -42,20 +42,11 @@ const welcomeMessage = {
 };
 
 const universityDirectory = [
-  { name: "Ambo University", aliases: ["ambo"], city: "Ambo", region: "Oromia" },
-  { name: "Addis Ababa University (AAU)", aliases: ["aau", "addis ababa"], city: "Addis Ababa", region: "Addis Ababa" },
-  { name: "Jimma University", aliases: ["jimma"], city: "Jimma", region: "Oromia" },
-  { name: "Hawassa University", aliases: ["hawassa"], city: "Hawassa", region: "Sidama" },
-  { name: "Adama Science and Technology University (ASTU)", aliases: ["astu", "adama science", "adama university"], city: "Bishoftu (Debre Zeit)", region: "Oromia" },
-];
-
-const freshmanCourseCodes = [
-  "General Physics — Phys 1011",
-  "Applied Mathematics I — Math 1011",
-  "Logic and Critical Thinking — LoCT 1011",
-  "General Chemistry — Chem 1011",
-  "General Biology — Bio 1011",
-  "Communicative English Skills I — Engl 1011",
+  { name: "Ambo University", aliases: ["ambo"] },
+  { name: "Addis Ababa University (AAU)", aliases: ["aau", "addis ababa"] },
+  { name: "Jimma University", aliases: ["jimma"] },
+  { name: "Hawassa University", aliases: ["hawassa"] },
+  { name: "Adama Science and Technology University (ASTU)", aliases: ["astu", "adama science", "adama university"] },
 ];
 
 const quizQuestionBanks = {
@@ -88,30 +79,6 @@ const quizQuestionBanks = {
     { question: "An argument is sound when it is:", options: ["Valid and has true premises", "Persuasive and short", "Inductive and popular", "Valid even if a premise is false"], answer: 0, explanation: "Soundness requires both deductive validity and true premises." },
   ],
 };
-
-function getUniversityReply(query) {
-  const mentioned = universityDirectory.filter((university) => university.aliases.some((alias) => query.includes(alias)));
-  if (!mentioned.length) return "";
-
-  if (/grade|grading|scale|gpa|cgpa|mark/.test(query)) {
-    const names = mentioned.map((university) => university.name).join(" and ");
-    return `For ${names}: I don’t have the current, handbook-verified freshman grading bands for each university and department in this local demo, so I won’t invent cutoffs. Grade scales and course rules can vary by program and academic year.\n\nFor the official scale, check the registrar or freshman-program handbook for your cohort. I can still help calculate a weighted average once you provide the official marks and credit hours:\n\n\`\`\`text\nGPA = sum(grade_point × credit_hours) / sum(credit_hours)\n\`\`\`\n\nTell me the academic year or paste the handbook table, and I can interpret it precisely.`;
-  }
-
-  if (/exam|midterm|final|pattern/.test(query)) {
-    return `I don’t have verified current exam-pattern documents for ${mentioned.map((university) => university.name).join(" and ")}. Paper format, duration, and topic weighting can differ by course, instructor, and year. Paste or attach the paper text in Mock Quiz mode and I can structure any included multiple-choice questions; for an official pattern, check your department or course outline.`;
-  }
-
-  if (/code|course|phys|math|chem|logic|freshman/.test(query)) {
-    return `For ${mentioned.map((university) => university.name).join(" and ")}, these are course-code examples in the Freshman Exams ET demo archive, not a guaranteed official current catalog:\n\n${freshmanCourseCodes.map((course) => `- ${course}`).join("\n")}\n\nConfirm the exact course title and code against your department's current course outline; codes can change between programs and cohorts.`;
-  }
-
-  if (/campus|where|location|located|city|region/.test(query)) {
-    return mentioned.map((university) => `${university.name}: based in ${university.city}, ${university.region}, Ethiopia. This demo has city-level location information only; check the university site for campus maps, offices, or current services.`).join("\n\n");
-  }
-
-  return mentioned.map((university) => `${university.name} is based in ${university.city}, ${university.region}, Ethiopia. I can help with its location, freshman course-code examples, or explain how to verify grading rules in the current handbook.`).join("\n\n");
-}
 
 function getQuizSubject(prompt) {
   const query = prompt.toLowerCase();
@@ -199,104 +166,6 @@ function createMockQuiz(prompt) {
     source: prompt,
     questions: quizQuestionBanks[subject],
   };
-}
-
-function makeReply(prompt) {
-  const query = prompt.toLowerCase();
-  const universityReply = getUniversityReply(query);
-  if (universityReply) return universityReply;
-
-  if (/vector|physics|motion|force/.test(query)) {
-    return `Let’s break vectors into manageable pieces.
-
-- A vector has both magnitude and direction.
-- Resolve it into horizontal and vertical components before combining it with other vectors.
-- For a vector of magnitude A at angle θ: Ax = A cos θ and Ay = A sin θ.
-
-
-
-Use this quick check:
-
-\`\`\`text
-R = sqrt((sum Ax)^2 + (sum Ay)^2)
-theta = atan2(sum Ay, sum Ax)
-\`\`\`
-
-The signs of each component depend on the direction of the vector. Want to work through a specific question together?`;
-  }
-
-  if (/integration|applied math|calculus|integral|math/.test(query)) {
-    return `A reliable way to approach an integral is to identify its structure first.
-
-1. Simplify the expression and look for a direct rule.
-2. If you see a function and its derivative, try substitution.
-3. For a product such as x e^x, consider integration by parts.
-4. Differentiate your result to check it.
-
-\`\`\`text
-Integration by parts:
-∫ u dv = uv − ∫ v du
-\`\`\`
-
-For definite integrals, evaluate the antiderivative at the upper bound and subtract its value at the lower bound.`;
-  }
-
-  if (/logic|argument|fallac/.test(query)) {
-    return `To analyze a Logic question, separate what is claimed from why it is claimed.
-
-- Conclusion: the main claim the writer wants you to accept.
-- Premises: the reasons offered in support of that claim.
-- Validity: whether the conclusion follows if the premises are true.
-- Soundness: a valid argument whose premises are also true.
-
-Try rewriting the argument as “Because [premises], therefore [conclusion].” Then test the reasoning independently from whether you agree with the conclusion.`;
-  }
-
-  if (/chem|chemistry|mole|stoichi/.test(query)) {
-    return `For a stoichiometry problem, use the balanced equation as a ratio map.
-
-1. Balance the chemical equation.
-2. Convert the given quantity to moles.
-3. Use the coefficients to convert between substances.
-4. Convert the answer to the requested unit.
-
-\`\`\`text
-moles = mass (g) / molar mass (g/mol)
-\`\`\`
-
-Keep units in every step. They make an incorrect conversion much easier to catch.`;
-  }
-
-  if (/midterm|question\s*3|exam question/.test(query)) {
-    return `Here’s a calm way to tackle an unfamiliar exam question:
-
-1. Read the prompt twice and underline what it asks you to find.
-2. List the information and units you are given.
-3. Name the rule or concept that connects the given values to the unknown.
-4. Solve symbolically first, then substitute numbers and check units.
-
-I don’t have the text of Question 3 yet. Attach or paste it here and tell me the course, and I’ll work through the actual question with you.`;
-  }
-
-  if (/tip|final|study|prepare/.test(query)) {
-    return `A steady revision plan usually beats one long cram session.
-
-- Study in focused blocks, then take a short break.
-- Close your notes and retrieve key ideas from memory.
-- Mix worked problems with explaining concepts in your own words.
-- Review mistakes and write down the reason for each one.
-- Protect sleep before the exam; it helps memory and concentration.
-
-Pick one topic you find difficult and I can help you make a short revision plan for it.`;
-  }
-
-  return `I can help you study that. Tell me the course and topic, then share the exact part that feels confusing.
-
-- I can explain a concept step by step.
-- I can summarize a chapter or compare two ideas.
-- I can help you plan an exam question without skipping the reasoning.
-
-My answers are study guidance, so check important details against your lecture notes and course materials.`;
 }
 
 function QuizCard({ quiz, isDark }) {
@@ -424,6 +293,7 @@ export default function UnityAIAssistant() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isDark, setIsDark] = useState(true);
   const [activeMode, setActiveMode] = useState("chat");
+  const [language, setLanguage] = useState("en");
   const [messages, setMessages] = useState([welcomeMessage]);
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -455,19 +325,73 @@ export default function UnityAIAssistant() {
 
   useEffect(() => {
     if (!isTyping || !pendingRequest) return undefined;
-    const timer = window.setTimeout(() => {
-      setMessages((current) => [...current, {
-        id: `unity-${Date.now()}`,
-        role: "assistant",
-        content: pendingRequest.mode === "quiz"
-          ? "I built a five-question practice set from the topic keywords in your prompt. This local demo uses practice templates; it does not OCR attachments or verify an official exam paper."
-          : makeReply(pendingRequest.prompt),
-        quiz: pendingRequest.mode === "quiz" ? createMockQuiz(pendingRequest.prompt) : undefined,
-      }]);
-      setIsTyping(false);
-      setPendingRequest(null);
-    }, 850);
-    return () => window.clearTimeout(timer);
+    if (pendingRequest.mode === "quiz") {
+      const timer = window.setTimeout(() => {
+        setMessages((current) => [...current, {
+          id: `unity-${Date.now()}`,
+          role: "assistant",
+          content: "I built a five-question practice set from the topic keywords in your prompt. This local demo uses practice templates; it does not OCR attachments or verify an official exam paper.",
+          quiz: createMockQuiz(pendingRequest.prompt),
+        }]);
+        setIsTyping(false);
+        setPendingRequest(null);
+      }, 850);
+      return () => window.clearTimeout(timer);
+    }
+
+    const controller = new AbortController();
+    let isActive = true;
+    const requestReply = async () => {
+      try {
+        const response = await fetch("/api/unity-ai/chat", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            message: pendingRequest.prompt,
+            language: pendingRequest.language,
+          }),
+          signal: controller.signal,
+        });
+
+        let data;
+        try {
+          data = await response.json();
+        } catch {
+          throw new Error("Unity AI returned an invalid response.");
+        }
+        if (!response.ok) {
+          throw new Error(typeof data?.error === "string" ? data.error : "Unity AI could not answer. Please try again.");
+        }
+        if (data?.success !== true || typeof data.reply !== "string" || !data.reply.trim()) {
+          throw new Error("Unity AI returned an empty response.");
+        }
+        if (isActive) {
+          setMessages((current) => [...current, {
+            id: `unity-${Date.now()}`,
+            role: "assistant",
+            content: data.reply,
+          }]);
+        }
+      } catch (error) {
+        if (!isActive || error.name === "AbortError") return;
+        setMessages((current) => [...current, {
+          id: `unity-error-${Date.now()}`,
+          role: "assistant",
+          content: `I couldn't get a response: ${error.message}`,
+        }]);
+      } finally {
+        if (isActive) {
+          setIsTyping(false);
+          setPendingRequest(null);
+        }
+      }
+    };
+
+    requestReply();
+    return () => {
+      isActive = false;
+      controller.abort();
+    };
   }, [isTyping, pendingRequest]);
 
   const resetTextareaHeight = () => {
@@ -491,7 +415,7 @@ export default function UnityAIAssistant() {
     setAttachment(null);
     setStatusMessage("");
     setIsTyping(true);
-    setPendingRequest({ mode: activeMode, prompt });
+    setPendingRequest({ mode: activeMode, prompt, language });
     if (textareaRef.current) textareaRef.current.style.height = "auto";
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
@@ -541,7 +465,7 @@ export default function UnityAIAssistant() {
     : "text-slate-800 placeholder:text-slate-400";
 
   return (
-    <div className="unity-ai-widget fixed bottom-5 right-5 z-70 font-sans" aria-live="off">
+    <div id="unity-ai" className="unity-ai-widget fixed bottom-5 right-5 z-70 font-sans" aria-live="off">
       {isOpen && (
         <section className={`flex flex-col overflow-hidden border shadow-2xl backdrop-blur-xl transition-all duration-300 ${isExpanded ? "fixed inset-4 z-50 h-auto w-auto max-h-none rounded-3xl md:inset-8" : "mb-3 h-145 max-h-[85vh] w-[92vw] rounded-3xl sm:w-105"} ${panelClass}`} aria-label="Unity AI Assistant chat">
           <header className="relative shrink-0 border-b border-white/10 bg-linear-to-r from-blue-600 to-indigo-600 text-white">
@@ -566,7 +490,23 @@ export default function UnityAIAssistant() {
           </div>
 
           <div className={`shrink-0 border-b px-3 py-2.5 ${isDark ? "border-slate-800 bg-slate-900/70" : "border-slate-100 bg-slate-50/80"}`}>
-            <p className={`mb-2 flex items-center gap-1.5 text-[9px] font-semibold uppercase tracking-[.12em] ${secondaryTextClass}`}><Sparkles size={11} className="text-indigo-500" />{activeMode === "quiz" ? "Build a practice set" : "Suggested questions"}</p>
+            <div className="mb-2 flex items-center justify-between gap-2">
+              <p className={`flex items-center gap-1.5 text-[9px] font-semibold uppercase tracking-[.12em] ${secondaryTextClass}`}><Sparkles size={11} className="text-indigo-500" />{activeMode === "quiz" ? "Build a practice set" : "Suggested questions"}</p>
+              {activeMode === "chat" && (
+                <label className="flex items-center gap-1.5 text-[9px] text-slate-400">
+                  Language
+                  <select
+                    className={`rounded-md border px-1.5 py-1 text-[9px] outline-none focus:border-indigo-500 ${isDark ? "border-slate-700 bg-slate-950 text-slate-200" : "border-slate-200 bg-white text-slate-700"}`}
+                    value={language}
+                    onChange={(event) => setLanguage(event.target.value)}
+                  >
+                    <option value="en">English</option>
+                    <option value="om">Afaan Oromoo</option>
+                    <option value="am">አማርኛ</option>
+                  </select>
+                </label>
+              )}
+            </div>
             <div className="grid grid-cols-2 gap-1.5">
               {(activeMode === "quiz" ? quizPrompts : chatPrompts).map((prompt) => (
                 <button key={prompt} className={`min-h-9 rounded-lg border px-2 py-1.5 text-left text-[9px] leading-snug transition ${isDark ? "border-slate-700 bg-slate-800 text-slate-300 hover:border-indigo-500/60 hover:bg-slate-700" : "border-slate-200 bg-white text-slate-600 hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-700"}`} type="button" onClick={() => sendMessage(prompt)} disabled={isTyping}>{prompt}</button>

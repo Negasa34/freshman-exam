@@ -4,9 +4,14 @@ import ExamsList from "./pages/ExamsList.jsx";
 import NotesArchive from "./pages/NotesArchive.jsx";
 import UnityAIAssistant from "./components/UnityAIAssistant.jsx";
 import DepartmentGuide from "./pages/DepartmentGuide.jsx";
+import Footer from "./components/Footer.jsx";
 
 export default function App() {
   const [activePage, setActivePage] = useState("auth");
+  const goHome = () => setActivePage("auth");
+  const browseExams = () => setActivePage("exams");
+  const browseNotes = () => setActivePage("notes");
+  const browseDepartments = () => setActivePage("departments");
 
   const page = activePage === "departments"
     ? <DepartmentGuide onBrowseExams={() => setActivePage("exams")} onBrowseNotes={() => setActivePage("notes")} onBackToAuth={() => setActivePage("auth")} />
@@ -16,5 +21,16 @@ export default function App() {
         ? <ExamsList onBackToAuth={() => setActivePage("auth")} onBrowseNotes={() => setActivePage("notes")} onBrowseDepartments={() => setActivePage("departments")} />
         : <AuthPage onBrowseArchive={() => setActivePage("exams")} />;
 
-  return <>{page}<UnityAIAssistant /></>;
+  return (
+    <>
+      {page}
+      <Footer
+        onBackToHome={goHome}
+        onBrowseExams={browseExams}
+        onBrowseNotes={browseNotes}
+        onBrowseDepartments={browseDepartments}
+      />
+      <UnityAIAssistant />
+    </>
+  );
 }

@@ -113,28 +113,141 @@ export default function AuthPage({ onBrowseArchive }) {
     setErrors({});
     setNotice("");
   };
+  const submitLogin = async (event) => {
+  event.preventDefault();
 
-  const submitLogin = (event) => {
-    event.preventDefault();
-    const nextErrors = {};
-    if (!login.identifier.trim()) nextErrors.identifier = "Enter your email or username.";
-    if (!login.password) nextErrors.password = "Enter your password.";
-    else if (login.password.length < 8) nextErrors.password = "Use at least 8 characters.";
-    setErrors(nextErrors);
-    setNotice(Object.keys(nextErrors).length ? "" : "Your details pass local checks. Connect an authentication service to sign in.");
-  };
+  const nextErrors = {};
 
-  const submitRegistration = (event) => {
+  if (!login.identifier.trim()) {
+    nextErrors.identifier = "Enter your email.";
+  }
+
+  if (!login.password) {
+    nextErrors.password = "Enter your password.";
+  }
+
+  setErrors(nextErrors);
+
+  if (Object.keys(nextErrors).length > 0) {
+    setNotice("");
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      "http://localhost:5000/api/auth/login",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: login.identifier.trim(),
+          password: login.password,
+        }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      setNotice(data.message || "Login failed.");
+      return;
+    }
+
+    localStorage.setItem("freshman_token", data.token);
+    localStorage.setItem(
+      "freshman_user",
+      JSON.stringify(data.user)
+    );
+
+    setNotice(`Welcome back, ${data.user.name}!`);
+  } catch (error) {
+    console.error(error);
+    setNotice("Cannot connect to the backend server.");
+  }
+};
+
+ 
+
+  const submitRegistration = async (event) => {
     event.preventDefault();
+  
     const nextErrors = {};
-    if (registration.name.trim().length < 2) nextErrors.name = "Enter your full name.";
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(registration.email.trim())) nextErrors.email = "Enter a valid student email.";
-    if (!registration.university) nextErrors.university = "Select your target university.";
-    if (registration.password.length < 8) nextErrors.password = "Use at least 8 characters.";
-    if (registration.confirmPassword !== registration.password || !registration.confirmPassword) nextErrors.confirmPassword = "Passwords must match.";
-    if (!registration.terms) nextErrors.terms = "Agree to the terms to continue.";
+  
+    if (registration.name.trim().length < 2) {
+      nextErrors.name = "Enter your full name.";
+    }
+  
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(registration.email.trim())) {
+      nextErrors.email = "Enter a valid student email.";
+    }
+  
+    if (!registration.university) {
+      nextErrors.university = "Select your target university.";
+    }
+  
+    if (registration.password.length < 8) {
+      nextErrors.password = "Use at least 8 characters.";
+    }
+  
+    if (
+      !registration.confirmPassword ||
+      registration.confirmPassword !== registration.password
+    ) {
+      nextErrors.confirmPassword = "Passwords must match.";
+    }
+  
+    if (!registration.terms) {
+      nextErrors.terms = "Agree to the terms to continue.";
+    }
+  
     setErrors(nextErrors);
-    setNotice(Object.keys(nextErrors).length ? "" : "Your details pass local checks. Connect an authentication service to create an account.");
+  
+    if (Object.keys(nextErrors).length > 0) {
+      setNotice("");
+      return;
+    }
+  
+    try {
+      const response = await fetch(
+        "http://localhost:5000/api/auth/register",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: registration.name.trim(),
+            email: registration.email.trim(),
+            password: registration.password,
+          }),
+        }
+      );
+  
+      const data = await response.json();
+  
+      if (!response.ok) {
+        setNotice(data.message || "Registration failed.");
+        return;
+      }
+  
+      setNotice("Account created successfully. You can now sign in.");
+  
+      setRegistration({
+        name: "",
+        email: "",
+        university: "",
+        password: "",
+        confirmPassword: "",
+        terms: false,
+      });
+  
+      setActiveTab("login");
+    } catch (error) {
+      console.error(error);
+      setNotice("Cannot connect to the backend server.");
+    }
   };
 
   const requestPasswordReset = () => {

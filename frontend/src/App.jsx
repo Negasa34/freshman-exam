@@ -4,6 +4,7 @@ import ExamsList from "./pages/ExamsList.jsx";
 import NotesArchive from "./pages/NotesArchive.jsx";
 import UnityAIAssistant from "./components/ai/UnityAIAssistant.jsx";
 import DepartmentGuide from "./pages/DepartmentGuide.jsx";
+import Footer from "./components/common/Footer.jsx";
 
 export default function App() {
   const [activePage, setActivePage] = useState("auth");
@@ -16,5 +17,11 @@ export default function App() {
         ? <ExamsList onBackToAuth={() => setActivePage("auth")} onBrowseNotes={() => setActivePage("notes")} onBrowseDepartments={() => setActivePage("departments")} />
         : <AuthPage onBrowseArchive={() => setActivePage("exams")} />;
 
-  return <>{page}<UnityAIAssistant /></>;
+  return (
+    <>
+      {page}
+      <Footer onNavigate={setActivePage} />
+      <UnityAIAssistant />
+    </>
+  );
 }

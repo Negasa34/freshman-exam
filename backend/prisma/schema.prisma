@@ -11,6 +11,7 @@ model User {
   name      String
   email     String   @unique
   password  String
+  isPremium Boolean  @default(false)
   createdAt DateTime @default(now())
 }
 model Course {
@@ -20,11 +21,28 @@ model Course {
   description String?
   createdAt   DateTime @default(now())
   notes Note[]
+  exams Exam[]
 }
 model Note {
   id        String   @id @default(uuid())
   title     String
   content   String
+  courseId  String
+  createdAt DateTime @default(now())
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+}
+enum ExamType {
+  MID
+  FINAL
+}
+model Exam {
+  id        String   @id @default(uuid())
+  title     String
+  year      Int
+  type      ExamType
+  isPremium Boolean  @default(false)
+  fileUrl   String
   courseId  String
   createdAt DateTime @default(now())
 

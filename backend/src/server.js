@@ -7,6 +7,7 @@ const userRoutes = require("./routes/userRoutes");
 const courseRoutes = require("./routes/courseRoutes");
 const authMiddleware = require("./middleware/authMiddleware");
 const noteRoutes = require("./routes/noteRoutes");
+const examRoutes = require("./routes/examRoutes");
 
 const app = express();
 
@@ -18,7 +19,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/courses", courseRoutes);
 app.use("/api/notes", noteRoutes);
-
+app.use("/api/exams", examRoutes);
 // Home route
 app.get("/", (req, res) => {
   res.json({

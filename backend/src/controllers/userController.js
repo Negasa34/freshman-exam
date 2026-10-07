@@ -7,11 +7,12 @@ async function getMe(req, res) {
         id: req.user.userId,
       },
       select: {
-        id: true,
-        name: true,
-        email: true,
-        createdAt: true,
-      },
+  id: true,
+  name: true,
+  email: true,
+  isPremium: true,
+  createdAt: true,
+},
     });
 
     if (!user) {

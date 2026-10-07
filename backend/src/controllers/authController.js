@@ -2,6 +2,77 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const prisma = require("../lib/prisma");
 
+async function signup(req, res) {
+  const { fullName, email, university, password } = req.body ?? {};
+
+  if (
+    typeof fullName !== "string" ||
+    typeof email !== "string" ||
+    typeof university !== "string" ||
+    typeof password !== "string" ||
+    !fullName.trim() ||
+    !email.trim() ||
+    !university.trim() ||
+    !password
+  ) {
+    return res.status(400).json({
+      success: false,
+      message: "Full name, email, university and password are required.",
+    });
+  }
+
+  const normalizedEmail = email.trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+    return res.status(400).json({
+      success: false,
+      message: "Enter a valid email address.",
+    });
+  }
+
+  if (password.length < 8) {
+    return res.status(400).json({
+      success: false,
+      message: "Password must be at least 8 characters long.",
+    });
+  }
+
+  try {
+    const hashedPassword = await bcrypt.hash(password, 12);
+    const user = await prisma.user.create({
+      data: {
+        name: fullName.trim(),
+        email: normalizedEmail,
+        university: university.trim(),
+        password: hashedPassword,
+      },
+    });
+
+    return res.status(201).json({
+      success: true,
+      message: "Account created successfully.",
+      user: {
+        id: user.id,
+        fullName: user.name,
+        email: user.email,
+        university: user.university,
+      },
+    });
+  } catch (error) {
+    if (error.code === "P2002" && error.meta?.target?.includes("email")) {
+      return res.status(409).json({
+        success: false,
+        message: "An account with this email already exists.",
+      });
+    }
+
+    console.error("Signup failed:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Unable to create the account right now.",
+    });
+  }
+}
+
 async function register(req, res) {
   try {
     const { name, email, password } = req.body;
@@ -12,8 +83,9 @@ async function register(req, res) {
       });
     }
 
+    const normalizedEmail = email.trim().toLowerCase();
     const existingUser = await prisma.user.findUnique({
-      where: { email },
+      where: { email: normalizedEmail },
     });
 
     if (existingUser) {
@@ -26,8 +98,8 @@ async function register(req, res) {
 
     const user = await prisma.user.create({
       data: {
-        name,
-        email,
+        name: name.trim(),
+        email: normalizedEmail,
         password: hashedPassword,
       },
     });
@@ -59,8 +131,9 @@ async function login(req, res) {
       });
     }
 
+    const normalizedEmail = email.trim().toLowerCase();
     const user = await prisma.user.findUnique({
-      where: { email },
+      where: { email: normalizedEmail },
     });
 
     if (!user) {
@@ -101,6 +174,7 @@ async function login(req, res) {
 }
 
 module.exports = {
+  signup,
   register,
   login,
 };

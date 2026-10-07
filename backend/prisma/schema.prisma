@@ -7,12 +7,14 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  name      String
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
+  id         String   @id @default(uuid())
+  name       String
+  email      String   @unique
+  password   String
+  university String?
+  createdAt  DateTime @default(now())
 }
+
 model Course {
   id          String   @id @default(uuid())
   name        String

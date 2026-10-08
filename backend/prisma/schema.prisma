@@ -5,6 +5,10 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+enum UserRole {
+  STUDENT
+  ADMIN
+}
 
 model User {
   id        String   @id @default(uuid())
@@ -12,6 +16,7 @@ model User {
   email     String   @unique
   password  String
   isPremium Boolean  @default(false)
+  role      UserRole @default(STUDENT)
   createdAt DateTime @default(now())
 }
 model Course {

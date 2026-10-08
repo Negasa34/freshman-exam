@@ -11,6 +11,7 @@ async function getMe(req, res) {
   name: true,
   email: true,
   isPremium: true,
+  role: true,
   createdAt: true,
 },
     });

@@ -1,4 +1,6 @@
 const express = require("express");
+const authMiddleware = require("../middleware/authMiddleware");
+const adminMiddleware = require("../middleware/adminMiddleware");
 const {
   getCourses,
   getCourseById,
@@ -9,6 +11,11 @@ const router = express.Router();
 
 router.get("/", getCourses);
 router.get("/:id", getCourseById);
-router.post("/", createCourse);
+router.post(
+  "/",
+  authMiddleware,
+  adminMiddleware,
+  createCourse
+);
 
 module.exports = router;

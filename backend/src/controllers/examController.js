@@ -5,18 +5,27 @@ async function getExamsByCourse(req, res) {
     const { courseId } = req.params;
 
     const exams = await prisma.exam.findMany({
-      where: {
-        courseId,
-      },
-      orderBy: [
-        {
-          year: "desc",
-        },
-        {
-          type: "asc",
-        },
-      ],
-    });
+  where: {
+    courseId,
+  },
+  select: {
+    id: true,
+    title: true,
+    year: true,
+    type: true,
+    isPremium: true,
+    courseId: true,
+    createdAt: true,
+  },
+  orderBy: [
+    {
+      year: "desc",
+    },
+    {
+      type: "asc",
+    },
+  ],
+});
 
     return res.status(200).json({
       exams,

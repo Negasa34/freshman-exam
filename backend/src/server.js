@@ -1,6 +1,10 @@
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
+console.log(
+  "JWT_SECRET loaded:",
+  Boolean(process.env.JWT_SECRET)
+);
 
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");

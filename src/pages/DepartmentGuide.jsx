@@ -6,6 +6,7 @@ import {
   Check,
   ChevronDown,
   GraduationCap,
+  LogOut,
   MapPin,
   Search,
   X,
@@ -400,7 +401,12 @@ function DepartmentCard({ department, language, labels, onOpen }) {
   );
 }
 
-export default function DepartmentGuide({ onBrowseExams, onBrowseNotes, onBackToAuth }) {
+export default function DepartmentGuide({
+  onBrowseExams,
+  onBrowseNotes,
+  onBackToAuth,
+  onLogout,
+}) {
   const [language, setLanguage] = useState("en");
   const [activeStream, setActiveStream] = useState("all");
   const [selectedUniversity, setSelectedUniversity] = useState("all");
@@ -429,6 +435,14 @@ export default function DepartmentGuide({ onBrowseExams, onBrowseNotes, onBackTo
           <span className="relative grid h-17 place-items-center text-xs font-semibold text-[#203832] after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:bg-[#187566]">{labels.guideNav}</span>
         </nav>
         <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+          <button
+  className="inline-flex items-center gap-1 border border-[#d8b9aa] px-2 py-2 text-[9px] font-semibold text-[#9a4939] transition hover:bg-[#fbefeb] sm:px-2.5"
+  type="button"
+  onClick={onLogout}
+>
+  <LogOut size={12} />
+  <span>Logout</span>
+</button>
           <button className="inline-flex items-center gap-1 border border-[#bacbc2] px-2 py-2 text-[9px] font-semibold text-[#24584d] transition hover:bg-[#edf4ee] sm:px-2.5" type="button" onClick={onBrowseExams} aria-label={labels.examsNav}><ArrowLeft size={12} /><span className="hidden sm:inline">{labels.examsNav}</span></button>
           <button className="hidden items-center gap-1 border border-[#bacbc2] px-2.5 py-2 text-[9px] font-semibold text-[#24584d] transition hover:bg-[#edf4ee] sm:inline-flex" type="button" onClick={onBrowseNotes}>{labels.notesNav}</button>
           <div className="flex items-center gap-0.5 border border-[#dce3dc] bg-white p-0.5" role="tablist" aria-label="Choose language">

@@ -11,14 +11,21 @@ export default function App() {
   const handleLoginSuccess = () => {
     setActivePage("departments");
   };
+  const handleLogout = () => {
+  localStorage.removeItem("freshman_token");
+  localStorage.removeItem("freshman_user");
+  sessionStorage.removeItem("freshman_token");
+  setActivePage("auth");
+};
 
   const page =
     activePage === "departments" ? (
-      <DepartmentGuide
-        onBrowseExams={() => setActivePage("exams")}
-        onBrowseNotes={() => setActivePage("notes")}
-        onBackToAuth={() => setActivePage("auth")}
-      />
+       <DepartmentGuide
+  onBrowseExams={() => setActivePage("exams")}
+  onBrowseNotes={() => setActivePage("notes")}
+  onBackToAuth={() => setActivePage("auth")}
+  onLogout={handleLogout}
+/>
     ) : activePage === "notes" ? (
       <NotesArchive
         onBrowseExams={() => setActivePage("exams")}

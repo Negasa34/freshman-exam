@@ -5,6 +5,7 @@ require("dotenv").config();
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const courseRoutes = require("./routes/courseRoutes");
+const unityAiRoutes = require("./routes/unity-ai.routes");
 const authMiddleware = require("./middleware/authMiddleware");
 
 const app = express();
@@ -16,6 +17,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/courses", courseRoutes);
+app.use("/api/unity-ai", unityAiRoutes);
 
 // Home route
 app.get("/", (req, res) => {

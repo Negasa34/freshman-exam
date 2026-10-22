@@ -22,3 +22,23 @@ model Course {
   description String?
   createdAt   DateTime @default(now())
 }
+
+model University {
+  id          String       @id @default(uuid())
+  name        String       @unique
+  location    String?
+  departments Department[]
+  createdAt   DateTime     @default(now())
+}
+
+model Department {
+  id           String     @id @default(uuid())
+  name         String
+  description  String?
+  requirements String?
+  universityId String
+  university   University @relation(fields: [universityId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+
+  @@unique([name, universityId])
+}

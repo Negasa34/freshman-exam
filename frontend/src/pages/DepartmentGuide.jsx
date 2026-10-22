@@ -419,7 +419,7 @@ export default function DepartmentGuide({ onBrowseExams, onBrowseNotes, onBackTo
   }, [activeStream, search, selectedUniversity]);
 
   return (
-    <div className="min-h-screen bg-[#f2f4ee] font-sans text-[#172a28]">
+    <div className="department-guide min-h-screen bg-[#f2f4ee] font-sans text-[#172a28]">
       <div className="flex min-h-8 items-center justify-center gap-2 bg-[#1a302d] px-3 py-1.5 text-center font-mono text-[8px] tracking-wide text-[#e7eee7] sm:text-[10px]"><span className="h-1.5 w-1.5 rounded-full bg-[#e1ad62]" />{labels.eyebrow}</div>
       <header className="flex min-h-17 items-center justify-between gap-3 border-b border-[#dfe4dd] bg-[#fbfcf8] px-4 sm:px-7 lg:px-[max(6.5vw,calc((100vw-1320px)/2))]">
         <button className="flex shrink-0 items-center gap-2.5 text-left text-[#172a28]" type="button" onClick={onBackToAuth} aria-label="Freshman Exams ET home"><span className="grid h-9 w-9 place-items-center bg-[#1d4841] text-[#f0f0dc]"><GraduationCap size={20} /></span><span className="text-[16px] font-bold leading-tight sm:text-lg">freshman<span className="text-[#c86c50]">.</span><small className="block font-mono text-[8px] font-normal tracking-[.2em] text-[#7a8880]">EXAMS ET</small></span></button>

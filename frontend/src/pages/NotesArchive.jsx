@@ -245,7 +245,7 @@ export default function NotesArchive({ onBrowseExams, onBrowseDepartments, onBac
   };
 
   return (
-    <div className="min-h-screen bg-[#f2f4ee] font-sans text-[#172a28]">
+    <div className="notes-archive min-h-screen bg-[#f2f4ee] font-sans text-[#172a28]">
       <div className="flex min-h-8.5 items-center justify-center gap-2 px-3 py-1.5 text-center font-mono text-[8px] tracking-wide text-[#e7eee7] sm:gap-2.5 sm:text-[10px]" style={{ backgroundColor: "#1a302d" }}>
         <span className="h-1.5 w-1.5 rounded-full bg-[#e1ad62] shadow-[0_0_0_3px_rgba(225,173,98,.17)]" />A growing archive, built for Ethiopian freshmen<span className="text-[#78918a]">/</span>2014–2017 E.C.
       </div>

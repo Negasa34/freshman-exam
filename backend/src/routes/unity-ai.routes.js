@@ -16,7 +16,7 @@ const LANGUAGE_NAMES = {
 };
 
 function getConfiguredModel() {
-  return process.env.GEMINI_MODEL?.trim() || "gemini-3.8-flash";
+  return process.env.GEMINI_MODEL?.trim() || "gemini-2.5-flash";
 }
 
 function isCredentialError(error) {
@@ -110,8 +110,9 @@ router.post("/chat", async (req, res) => {
 
   try {
     const ai = new GoogleGenAI({ apiKey });
+    const model = getConfiguredModel();
     const result = await ai.models.generateContent({
-      model: getConfiguredModel(),
+      model,
       contents: prompt,
       config: {
         systemInstruction: SYSTEM_INSTRUCTION
@@ -126,7 +127,7 @@ router.post("/chat", async (req, res) => {
       });
     }
 
-    return res.json({ success: true, reply });
+    return res.json({ success: true, reply, model });
   } catch (error) {
     if (isCredentialError(error)) {
       return res.status(503).json({

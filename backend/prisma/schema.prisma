@@ -5,9 +5,20 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
 enum UserRole {
   STUDENT
   ADMIN
+}
+
+enum ExamType {
+  MID
+  FINAL
+}
+
+enum Semester {
+  SEMESTER_1
+  SEMESTER_2
 }
 
 model User {
@@ -19,28 +30,71 @@ model User {
   role      UserRole @default(STUDENT)
   createdAt DateTime @default(now())
 }
-model Course {
+
+model University {
   id          String   @id @default(uuid())
-  name        String
+  name        String   @unique
   code        String   @unique
   description String?
   createdAt   DateTime @default(now())
-  notes Note[]
-  exams Exam[]
+
+  departments Department[]
+  courses     Course[]
 }
-model Note {
+
+model Department {
+  id           String   @id @default(uuid())
+  name         String
+  code         String
+  description  String?
+  universityId String
+  createdAt    DateTime @default(now())
+
+  university University @relation(fields: [universityId], references: [id], onDelete: Cascade)
+  courses    Course[]
+
+  @@unique([universityId, code])
+}
+
+model Course {
+  id           String    @id @default(uuid())
+  name         String
+  code         String    @unique
+  description  String?
+  universityId String?
+  semester     Semester?
+  departmentId String?
+  createdAt    DateTime  @default(now())
+
+  university University? @relation(fields: [universityId], references: [id], onDelete: SetNull)
+  department Department? @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+
+  moduleMaterials ModuleMaterial[]
+  notes           Note[]
+  exams           Exam[]
+}
+
+model ModuleMaterial {
   id        String   @id @default(uuid())
   title     String
-  content   String
+  fileUrl   String
   courseId  String
   createdAt DateTime @default(now())
 
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 }
-enum ExamType {
-  MID
-  FINAL
+
+model Note {
+  id        String   @id @default(uuid())
+  title     String
+  content   String   @default("")
+  fileUrl   String?
+  courseId  String
+  createdAt DateTime @default(now())
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 }
+
 model Exam {
   id        String   @id @default(uuid())
   title     String

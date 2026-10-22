@@ -12,7 +12,13 @@ import {
   X,
 } from "lucide-react";
 
-const universities = ["Ambo", "AAU", "Jimma", "Hawassa", "ASTU"];
+const universities = [
+  "Ambo University",
+  "Addis Ababa University",
+  "Adama Science and Technology University",
+  "Jimma University",
+  "Hawassa University",
+];
 
 const copy = {
   en: {
@@ -156,7 +162,7 @@ const departments = [
   {
     id: "health",
     stream: "health",
-    universities: ["Ambo", "AAU", "Jimma", "Hawassa"],
+    universities: ["Ambo University","Addis Ababa University" ,"Jimma University" , "Hawassa"],
     salary: { entry: "ETB 10,000–30,000", experienced: "ETB 30,000–100,000+" },
     name: { en: "Medicine & Health Sciences", om: "Qoricha fi Saayinsii Fayyaa", am: "ሕክምና እና የጤና ሳይንስ" },
     overview: {
@@ -237,7 +243,7 @@ const departments = [
   {
     id: "agriculture",
     stream: "natural",
-    universities: ["Ambo", "AAU", "Jimma", "Hawassa"],
+    universities: ["Ambo", "AAU", "Jimma", "Hawassa University"],
     salary: { entry: "ETB 10,000–24,000", experienced: "ETB 25,000–65,000+" },
     name: { en: "Agriculture & Biotechnology", om: "Qonnaa fi Baayoo-teeknooloojii", am: "ግብርና እና ባዮቴክኖሎጂ" },
     overview: {
@@ -463,7 +469,7 @@ export default function DepartmentGuide({
         <section className="mx-auto w-[calc(100%-32px)] max-w-280 pb-8 sm:w-[calc(100%-48px)]">
           <div className="mt-5 flex flex-col border border-[#dce1d9] bg-[#fbfcf8] md:min-h-14.5 md:flex-row md:items-center">
             <label className="flex min-h-12 flex-1 items-center gap-2.5 px-3.5 text-[#6e827a] sm:px-4"><Search size={17} /><span className="sr-only">{labels.search}</span><input className="w-full min-w-0 border-0 bg-transparent text-xs text-[#283a34] outline-none placeholder:text-[#8a9790] focus:ring-0" value={search} onChange={(event) => setSearch(event.target.value)} placeholder={labels.search} type="search" /></label>
-            <div className="flex min-h-11.5 items-center gap-2 border-t border-[#e3e8e0] px-3 md:min-h-14.5 md:border-l md:border-t-0 md:px-4"><MapPin className="shrink-0 text-[#71817a]" size={14} /><label className="sr-only" htmlFor="department-university">{labels.university}</label><select id="department-university" className="w-full min-w-0 border-0 bg-transparent py-2 pr-5 text-[10px] text-[#364840] outline-none focus:ring-0 sm:w-40" value={selectedUniversity} onChange={(event) => setSelectedUniversity(event.target.value)}><option value="all">{labels.allUniversities}</option>{universities.map((university) => <option key={university} value={university}>{university === "AAU" ? "Addis Ababa University (AAU)" : university === "ASTU" ? "Adama Science and Technology (ASTU)" : `${university} University`}</option>)}</select><ChevronDown aria-hidden="true" size={13} className="-ml-5 pointer-events-none text-[#819087]" /></div>
+            <div className="flex min-h-11.5 items-center gap-2 border-t border-[#e3e8e0] px-3 md:min-h-14.5 md:border-l md:border-t-0 md:px-4"><MapPin className="shrink-0 text-[#71817a]" size={14} /><label className="sr-only" htmlFor="department-university">{labels.university}</label><select id="department-university" className="w-full min-w-0 border-0 bg-transparent py-2 pr-5 text-[10px] text-[#364840] outline-none focus:ring-0 sm:w-40" value={selectedUniversity} onChange={(event) => setSelectedUniversity(event.target.value)}><option value="all">{labels.allUniversities}</option>{universities.map((university) => <option key={university} value={university}>{university === "AAU" ? "Addis Ababa University (AAU)" : university === "Adama Science and Technology University" ? "Adama Science and Technology (ASTU)" : `${university} University`}</option>)}</select><ChevronDown aria-hidden="true" size={13} className="-ml-5 pointer-events-none text-[#819087]" /></div>
           </div>
 
           <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between"><div><p className="mb-1 font-mono text-[8px] tracking-[.12em] text-[#75847c]">{labels.availability}</p><h2 className="font-serif text-2xl text-[#203832]">{filteredDepartments.length} {labels.results}</h2></div><p className="max-w-xl text-[10px] leading-relaxed text-[#7b8981]">{labels.availabilityNote}</p></div>

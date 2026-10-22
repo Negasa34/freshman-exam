@@ -1,3 +1,4 @@
+
 const prisma = require("../lib/prisma");
 
 async function getNotesByCourse(req, res) {
@@ -56,11 +57,11 @@ async function getNoteById(req, res) {
 async function createNote(req, res) {
   try {
     const { courseId } = req.params;
-    const { title, content } = req.body;
+    const { title, content, fileUrl } = req.body;
 
-    if (!title || !content) {
+    if (!title || (!content && !fileUrl)) {
       return res.status(400).json({
-        message: "Title and content are required",
+        message: "Title and PDF file are required",
       });
     }
 
@@ -79,7 +80,8 @@ async function createNote(req, res) {
     const note = await prisma.note.create({
       data: {
         title,
-        content,
+        content: content || "",
+        fileUrl: fileUrl || null,
         courseId,
       },
     });

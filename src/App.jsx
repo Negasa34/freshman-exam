@@ -1,31 +1,36 @@
+
 import { useState } from "react";
 import AuthPage from "./pages/AuthPage.jsx";
 import ExamsList from "./pages/ExamsList.jsx";
 import NotesArchive from "./pages/NotesArchive.jsx";
 import UnityAIAssistant from "./components/UnityAIAssistant.jsx";
 import DepartmentGuide from "./pages/DepartmentGuide.jsx";
+import ResourceBrowser from "./pages/ResourceBrowser.jsx";
 
 export default function App() {
   const [activePage, setActivePage] = useState("auth");
 
   const handleLoginSuccess = () => {
-    setActivePage("departments");
+    setActivePage("resources");
   };
+
   const handleLogout = () => {
-  localStorage.removeItem("freshman_token");
-  localStorage.removeItem("freshman_user");
-  sessionStorage.removeItem("freshman_token");
-  setActivePage("auth");
-};
+    localStorage.removeItem("freshman_token");
+    localStorage.removeItem("freshman_user");
+    sessionStorage.removeItem("freshman_token");
+    setActivePage("auth");
+  };
 
   const page =
-    activePage === "departments" ? (
-       <DepartmentGuide
-  onBrowseExams={() => setActivePage("exams")}
-  onBrowseNotes={() => setActivePage("notes")}
-  onBackToAuth={() => setActivePage("auth")}
-  onLogout={handleLogout}
-/>
+    activePage === "resources" ? (
+      <ResourceBrowser onLogout={handleLogout} />
+    ) : activePage === "departments" ? (
+      <DepartmentGuide
+        onBrowseExams={() => setActivePage("exams")}
+        onBrowseNotes={() => setActivePage("notes")}
+        onBackToAuth={() => setActivePage("auth")}
+        onLogout={handleLogout}
+      />
     ) : activePage === "notes" ? (
       <NotesArchive
         onBrowseExams={() => setActivePage("exams")}
